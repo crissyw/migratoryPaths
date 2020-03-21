@@ -57,7 +57,7 @@ path.link {
 </style>
 <body>
     <h2>
-      <span>NASA Centers</span>
+      <span>Festival Paths</span>
     </h2>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -69,7 +69,7 @@ var width = 1000,
     height = 600,
     centered;
 
-var projection = d3.geo.albersUsa()
+var projection = d3.geo.geoEqualEarth()
     .scale(1070)
     .translate([width / 2, height / 2]);
 
@@ -120,7 +120,7 @@ point.append("text")
     .attr("dx", "1em")
     .text(function(d) { return d.key; });
 
-d3.json("us.json", function(error, us) {
+d3.json("countries-110m.json", function(error, us) {
     // draw states
     stateGroup.append("g")
       .attr("id", "states")
@@ -135,7 +135,7 @@ d3.json("us.json", function(error, us) {
       .attr("id", "state-borders")
       .attr("d", path);
 
-    d3.csv("nasacenters.csv", function(error, data) {
+    d3.csv("festivals.csv", function(error, data) {
         // Draw images after drawing paths.
         imageGroup.selectAll("image").data([0])
            .data(data)
@@ -145,10 +145,10 @@ d3.json("us.json", function(error, us) {
             .attr("width", "30")
             .attr("height", "30")
             .attr("x", function(d) {
-                   return projection([d.lon, d.lat])[0]-15;
+                   return projection([d.venue_city_coords_long, d.venue_city_coords_long])[0]-15;
             })
             .attr("y", function(d) {
-                   return projection([d.lon, d.lat])[1]-15;
+                   return projection([d.venue_city_coords_long, d.venue_city_coords_long])[1]-15;
             })
 
         // --- Helper functions (for tweening the path)
@@ -185,8 +185,8 @@ d3.json("us.json", function(error, us) {
             {
                 type: "LineString",
                     coordinates: [
-                        [ data[0].lon, data[0].lat ],
-                        [ data[1].lon, data[1].lat ]
+                        [ data[0].venue_city_coords_long, data[0].venue_city_coords_lat ],
+                        [ data[1].venue_city_coords_long, data[1].venue_city_coords_lat ]
                     ]
             }
         ];
@@ -201,8 +201,8 @@ d3.json("us.json", function(error, us) {
             links.push({
                 type: "LineString",
                 coordinates: [
-                    [ data[i].lon, data[i].lat ],
-                    [ data[i+1].lon, data[i+1].lat ]
+                    [ data[i].venue_city_coords_long, data[i].venue_city_coords_lat ],
+                    [ data[i+1].venue_city_coords_long, data[i+1].venue_city_coords_lat ]
                 ]
             });
         }
